@@ -1,0 +1,30 @@
+version: '2.7.12-SNAPSHOT'
+
+services:
+  database:
+    image: postgres
+    restart: always
+    container_name: database_1
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: qwerty
+      POSTGRES_DB: zooshop
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+  application:
+    image: app
+    container_name: application_1
+    ports:
+      - 8080:8080
+    depends_on:
+      - database
+    environment:
+      - "SPRING_DATASOURCE_USERNAME=postgres"
+      - "SPRING_DATASOURCE_PASSWORD=qwerty"
+      - "SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/zooshop"
+
+volumes:
+  postgres_volume:
+    external: true
